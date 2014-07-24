@@ -33,19 +33,22 @@ import com.mulesoft.module.batch.BatchTestHelper;
  * for this Mule Template that make calls to external systems.
  */
 public class BusinessLogicIT extends AbstractTemplateTestCase {
-	protected static final int TIMEOUT = 60;
-	private static final Logger LOGGER = Logger.getLogger(BusinessLogicIT.class);
-	private static final String POLL_FLOW_NAME = "triggerFlow";
-	private static final String ACCOUNT_NAME = "Product Test Name";
+	private static final String KEY_LAST_MODIFIED_DATE = "LastModifiedDate";
+	private static final String KEY_ID = "Id";
+	private static final String KEY_NAME = "Name";
 	
-	private BatchTestHelper helper;
-	private Map<String, Object> account;
+	private static final String POLL_FLOW_NAME = "triggerFlow";
+	private static final String PRODUCT_NAME = "Product Test Name";
+	
+	private static final Logger LOGGER = Logger.getLogger(BusinessLogicIT.class);
 	
 	private static final int TIMEOUT_SEC = 120;
 
 	private final Prober pollProber = new PollingProber(60000, 1000);
 	private final PipelineSynchronizeListener pipelineListener = new PipelineSynchronizeListener(POLL_FLOW_NAME);
 
+	private BatchTestHelper helper;
+	private Map<String, Object> product;
 	
 	@BeforeClass
 	public static void init() {
@@ -60,17 +63,16 @@ public class BusinessLogicIT extends AbstractTemplateTestCase {
 		helper = new BatchTestHelper(muleContext);
 
 		// prepare test data
-		account = createSalesforceAccount();
-		insertSalesforceAccount(account);
+		product = createSalesforceProduct();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		stopFlowSchedulers(POLL_FLOW_NAME);
-		// delete previously created account from DB by matching ID
+		// delete previously created product from DB by matching ID
 		final Map<String, Object> acc = new HashMap<String, Object>();
-		acc.put("Name", account.get("Name"));
-		acc.put("Id", account.get("Id"));
+		acc.put(KEY_NAME, product.get(KEY_NAME));
+		acc.put(KEY_ID, product.get(KEY_ID));
 
 		deleteMaterialFromSap(acc);
 		deleteProductFromSalesforce(acc);
@@ -86,47 +88,44 @@ public class BusinessLogicIT extends AbstractTemplateTestCase {
 		helper.awaitJobTermination(TIMEOUT_SEC * 1000, 500);
 		helper.assertJobWasSuccessful();
 
-		final MuleEvent event = runFlow("queryProductFromSapFlow", account);
+		final MuleEvent event = runFlow("queryProductFromSapFlow", product);
 		final List<?> payload = (List<?>) event.getMessage().getPayload();
 
 		// print result
 		for (Object acc : payload){
-			LOGGER.info("selectAccountFromDB response: " + acc);
+			LOGGER.info("material from SAP response: " + acc);
 		}
 
 		Assert.assertEquals("The product should have been sync", 1, payload.size());
-		Assert.assertEquals("The product name should match", account.get("Name"), ((Map<?, ?>) payload.get(0)).get("Name"));
-	}
-
-	@SuppressWarnings("unchecked")
-	private void insertSalesforceAccount(final Map<String, Object> account) throws Exception {
-		final MuleEvent event = runFlow("createProductsInSalesforceFlow", Collections.singletonList(account));
-		final List<EnrichedSaveResult> result = (List<EnrichedSaveResult>) event.getMessage().getPayload();
-
-		// store Id into our product
-		for (EnrichedSaveResult item : result) {
-			LOGGER.info("response from insertSalesforceAccountSubFlow: " + item);
-			account.put("Id", item.getId());
-			account.put("LastModifiedDate", item.getPayload().getField("LastModifiedDate"));
-		}
+		Assert.assertEquals("The product name should match", product.get(KEY_NAME), ((Map<?, ?>) payload.get(0)).get(KEY_NAME));
 	}
 
 	private void deleteProductFromSalesforce(final Map<String, Object> acc) throws Exception {
 		List<Object> idList = new ArrayList<Object>();
-		idList.add(acc.get("Id"));
+		idList.add(acc.get(KEY_ID));
 		runFlow("deleteProductsFromSalesforceFlow", idList);
 	}
 
-	private void deleteMaterialFromSap(final Map<String, Object> account) throws Exception {
-		final MuleEvent event = runFlow("deleteProductsFromSapFlow", account);
+	private void deleteMaterialFromSap(final Map<String, Object> product) throws Exception {
+		final MuleEvent event = runFlow("deleteProductsFromSapFlow", product);
 		final Object result = event.getMessage().getPayload();
 		LOGGER.info("deleteMaterialFromSap result: " + result);
 	}
 
-	private Map<String, Object> createSalesforceAccount() {
-		final Map<String, Object> account = new HashMap<String, Object>();
-		account.put("Name", ACCOUNT_NAME + System.currentTimeMillis());
-		return account;
+	private Map<String, Object> createSalesforceProduct() throws Exception {
+		final Map<String, Object> product = new HashMap<String, Object>();
+		product.put(KEY_NAME, PRODUCT_NAME + System.currentTimeMillis());
+		
+		final MuleEvent event = runFlow("createProductsInSalesforceFlow", Collections.singletonList(product));
+		final List<?> result = (List<?>) event.getMessage().getPayload();
+		
+		// store Id into our product
+		for (Object item : result) {
+			LOGGER.info("response from createProductsInSalesforceFlow: " + item);
+			product.put(KEY_ID, ((EnrichedSaveResult) item).getId());
+			product.put(KEY_LAST_MODIFIED_DATE, ((EnrichedSaveResult) item).getPayload().getField(KEY_LAST_MODIFIED_DATE));
+		}
+		return product;
 	}
 
 	private void registerListeners() throws NotificationException {
