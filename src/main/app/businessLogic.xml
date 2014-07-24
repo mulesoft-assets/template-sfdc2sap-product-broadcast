@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:sap="http://www.mulesoft.org/schema/mule/sap" xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" 
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	version="EE-3.5.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sap http://www.mulesoft.org/schema/mule/sap/current/mule-sap.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd">
+    <data-mapper:config name="ZMULE_MATERIAL_GETLIST_to_Salesforce_Materials" transformationGraphPath="zmule_material_getlist_to_salesforce_materials.grf" doc:name="ZMULE_MATERIAL_GETLIST_to_Salesforce_Materials"/>
+	<batch:job name="syncProductsBatch">
+		<batch:threading-profile poolExhaustedAction="WAIT" />
+		<batch:process-records>
+			<batch:step name="foreachProductInSalesforceGetMaterialInSapStep">
+				<enricher target="#[recordVars['materialInSap']]" doc:name="Store result in record var 'materialInSap'" source="#[payload.isEmpty() ? NullPayload.getInstance() : payload[0]]">
+					<processor-chain doc:name="Processor Chain">
+                        <sap:outbound-endpoint exchange-pattern="request-response" connector-ref="SAP" type="function" functionName="ZMULE_MATERIAL_GETLIST" xmlVersion="2" outputXml="true" responseTimeout="10000" doc:name="Query Material from SAP">
+                            <sap:definition><![CDATA[<jco>
+  	<import>
+  		<field name="I_MAT_ID">#[payload['ProductCode']]</field>
+	</import>
+</jco>
+]]></sap:definition>
+                        </sap:outbound-endpoint>
+                        <data-mapper:transform config-ref="ZMULE_MATERIAL_GETLIST_to_Salesforce_Materials" doc:name="ZMULE_MATERIAL_GETLIST to Salesforce Materials"/>
+					</processor-chain>
+				</enricher>
+			</batch:step>
+			<batch:step name="foreachProductInSalesforceUpsertMaterialInSapStep" >
+                <expression-component doc:name="Prepare Material for Upsert"><![CDATA[if (recordVars['materialInSap'] is NullPayload) {
+	payload['MaterialNumber'] = payload['ProductCode'];
+	payload['BaseUnitOfMeasureX'] = 'X';
+} else {
+	payload['MaterialNumber'] = recordVars['materialInSap']['ProductCode'];
+	payload['BaseUnitOfMeasureX'] = '';
+}]]></expression-component>
+				<sap:outbound-endpoint exchange-pattern="request-response"
+					connector-ref="SAP" type="function" functionName="BAPI_MATERIAL_SAVEDATA"
+					xmlVersion="2" outputXml="true" evaluateFunctionResponse="true"
+					responseTimeout="10000" doc:name="Upsert Material" >
+                    <sap:definition><![CDATA[<jco>
+  	<import>
+	  	<structure name="HEADDATA">
+	  		<field name="MATERIAL">#[payload['MaterialNumber']]</field>
+	  		<field name="MATL_TYPE">${sap.material.type}</field>
+	  		<field name="IND_SECTOR">${sap.material.industrySector}</field>
+	  		<field name="BASIC_VIEW">X</field>
+	  	</structure>
+	  	<structure name="CLIENTDATA">
+	  		<field name="BASE_UOM">${sap.material.baseUnitOfMeasurement}</field>
+	  	</structure>
+	  	<structure name="CLIENTDATAX">
+	  		<field name="BASE_UOM">#[payload['BaseUnitOfMeasureX']]</field>
+	  	</structure>
+	</import>
+  	<tables>
+	  	<table name="MATERIALDESCRIPTION">
+	  		<row id="0">
+	  			<field name="LANGU">E</field>
+  				<field name="LANGU_ISO">EN</field>
+  				<field name="MATL_DESC">#[payload['Name']]</field>
+  			</row>
+	  	</table>
+	</tables>
+</jco>
+]]></sap:definition>
+                </sap:outbound-endpoint>
+				<logger message="MAterial Upsert Response: #[payload]" level="INFO" 
+					doc:name="Log Response" />
+			</batch:step>
+		</batch:process-records>
+		<batch:on-complete>
+			<json:object-to-json-transformer
+				doc:name="transform BatchJobInstance to JSON" />
+			<logger level="INFO" doc:name="log 'Migration process has finished'"
+				message="Migration process has finished: #[payload]" />
+		</batch:on-complete>
+	</batch:job>
+
+</mule>
