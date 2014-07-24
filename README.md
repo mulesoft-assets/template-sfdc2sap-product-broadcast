@@ -34,8 +34,7 @@ This Anypoint Template should serve as a foundation for setting an online sync o
 			As implemented, this Anypoint Template leverage the [Batch Module](http://www.mulesoft.org/documentation/display/current/Batch+Processing).
 			The batch job is divided in Input, Process and On Complete stages.
 			The integration is triggered by poll to Salesforce products. New or modified products are passed to the batch as input.
-			In the batch the material is fetched from SAP by its name. If it exists, its SAP product Group is resolved against SAP.
- 
+			In the batch the material is fetched from SAP by its `ProductCode`. Depending on the result the product is then created or updated in SAP.
 			Finally during the On Complete stage the Anypoint Template will log output statistics data into the console.
 
 # Considerations <a name="considerations"/>
@@ -64,10 +63,10 @@ There may be a few things that you need to know regarding SAP, in order for this
 
 Template uses custom BAPI functions. To create them please use following steps:
 
-1. Create structure ZMULE_S_MARA in transaction SE11 as per its definition in file structure_ZMULE_S_MARA.abap
-2. Create table type ZMULE_TT_MARA in transaction SE11 as per its definition in file table_type_ZMULE_TT_MARA.abap
-3. Create message class called ZMULESOFTINTEGRATION in transaction SE91 as per definition in file msg_class_ZMULESOFTINTEGRATION.abap
-4. Create function module ZMULE_MATERIAL_GETLIST in transaction SE37 as per source file ZMULE_MATERIAL_GETLIST.abap
+1. Create structure `ZMULE_S_MARA` in transaction `SE11` as per its definition in file `structure_ZMULE_S_MARA.abap`
+2. Create table type `ZMULE_TT_MARA` in transaction `SE11` as per its definition in file `table_type_ZMULE_TT_MARA.abap`
+3. Create message class called `ZMULESOFTINTEGRATION` in transaction `SE91` as per definition in file `msg_class_ZMULESOFTINTEGRATION.abap`
+4. Create function module `ZMULE_MATERIAL_GETLIST` in transaction `SE37` as per source file `ZMULE_MATERIAL_GETLIST.abap`
 
 Referenced files are in [src/main/resources] directory.
 ## Salesforce Considerations <a name="salesforceconsiderations"/>
@@ -172,9 +171,6 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + poll.startDelayMillis `5000`
 + page.size `100`
 + watermark.default.expression `2014-06-26T12:30:00.000Z`
-+ sap.material.type `ZHTI`
-+ sap.material.industrySector `T`
-+ sap.material.baseUnitOfMeasurement `KGS`
 		
 **SalesForce Connector configuration**
 
@@ -191,6 +187,9 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + sap.jco.sysnr `14`
 + sap.jco.client `800`
 + sap.jco.lang `EN`
++ sap.material.type `ZHTI`
++ sap.material.industrySector `T`
++ sap.material.baseUnitOfMeasurement `KGS`
 
 # API Calls <a name="apicalls"/>
  
