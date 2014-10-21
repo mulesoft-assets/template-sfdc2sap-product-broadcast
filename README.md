@@ -111,6 +111,7 @@ column='486'
 
 
 
+
 # Run it! <a name="runit"/>
 Simple steps to get SFDC2SAP-product-broadcast running.
 
@@ -192,7 +193,7 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + sap.material.baseUnitOfMeasurement `KGS`
 
 # API Calls <a name="apicalls"/>
-Â 
+Ê
 
 
 # Customize It!<a name="customizeit"/>
