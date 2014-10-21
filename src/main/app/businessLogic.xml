@@ -73,7 +73,7 @@ http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schem
 </jco>
 ]]></sap:definition>
                 </sap:outbound-endpoint>
-				<logger message="MAterial Upsert Response: #[payload]" level="INFO" 
+				<logger message="Material Upsert Response: #[payload]" level="INFO" 
 					doc:name="Log Response" />
 			</batch:step>
 		</batch:process-records>
