@@ -193,7 +193,7 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + sap.material.baseUnitOfMeasurement `KGS`
 
 # API Calls <a name="apicalls"/>
-Ê
+There are no particular considerations for this Anypoint Template regarding API calls.
 
 
 # Customize It!<a name="customizeit"/>

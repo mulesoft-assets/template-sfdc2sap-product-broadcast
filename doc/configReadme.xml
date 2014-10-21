@@ -53,7 +53,7 @@ Template uses custom BAPI functions. To create them please use following steps:
 Referenced files are in [src/main/resources] directory.
 ]]>
 		</section>
-		<section id="api_calls">&#160;</section>
+		<section id="api_calls">There are no particular considerations for this Anypoint Template regarding API calls.</section>
 		<section id="application_configuration">
 		<![CDATA[
 **Common configuration**
