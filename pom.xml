@@ -99,8 +99,8 @@
 
 		<!-- SAP Dependencies -->
 		<dependency>
-			<groupId>com.sap.conn.jco3</groupId>
-			<artifactId>sapjco</artifactId>
+			<groupId>com.sap.conn.jco</groupId>
+			<artifactId>sapjco3</artifactId>
 			<version>${sap.jco.version}</version>
 			<scope>test</scope>
 		</dependency>
@@ -112,8 +112,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sap.conn.idoc3</groupId>
-			<artifactId>sapidoc</artifactId>
+			<groupId>com.sap.conn.idoc</groupId>
+			<artifactId>sapidoc3</artifactId>
 			<version>${sap.idoc.version}</version>
 			<scope>test</scope>
 		</dependency>
