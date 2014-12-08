@@ -15,8 +15,8 @@
 	<name>template-sfdc2sap-product-broadcast Anypoint Template Project</name>
 
 	<properties>	
-		<sap.jco.version>3.0.9</sap.jco.version>
-		<sap.idoc.version>3.0.11</sap.idoc.version>
+		<sap.jco.version>3.0.10</sap.jco.version>
+		<sap.idoc.version>3.0.10</sap.idoc.version>
 		<sap.build.type>linux64</sap.build.type>
 	</properties>
 
@@ -99,7 +99,7 @@
 
 		<!-- SAP Dependencies -->
 		<dependency>
-			<groupId>com.sap.conn.jco</groupId>
+			<groupId>com.sap.conn.jco3</groupId>
 			<artifactId>sapjco</artifactId>
 			<version>${sap.jco.version}</version>
 			<scope>test</scope>
@@ -112,7 +112,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sap.conn.idoc</groupId>
+			<groupId>com.sap.conn.idoc3</groupId>
 			<artifactId>sapidoc</artifactId>
 			<version>${sap.idoc.version}</version>
 			<scope>test</scope>
@@ -149,6 +149,12 @@
 			<id>mule-ee-dependencies</id>
 			<name>Mule EE Dependencies</name>
 			<url>http://repository-master.mulesoft.org/nexus/content/repositories/mule-ee-dependencies/</url>
+		</repository>
+		<repository>
+			<id>mule-ee-thirdparty</id>
+			<name>MuleSoft Thirdparty Repository</name>
+			<url>https://repository.mulesoft.org/nexus/content/repositories/thirdparty/</url>
+			<layout>default</layout>
 		</repository>
 	</repositories>
 	
