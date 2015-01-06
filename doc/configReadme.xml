@@ -5,16 +5,16 @@
 	</placeholders>
 	<sections>
 		<section id="use_case">
-			This Anypoint Template should serve as a foundation for setting an online sync of products/materials from Salesforce to SAP.
-			Everytime there is a new product or a change in already existing one in Salesforce instance, the template will fetch it and upsert it in SAP.
+This Anypoint Template should serve as a foundation for setting an online sync of products/materials from Salesforce to SAP.
+Everytime there is a new product or a change in already existing one in Salesforce instance, the template will fetch it and upsert it in SAP.
 			
-			Requirements have been set not only to be used as examples, but also to establish a starting point to adapt your integration to your requirements.
+Requirements have been set not only to be used as examples, but also to establish a starting point to adapt your integration to your requirements.
 			
-			As implemented, this Anypoint Template leverage the [Batch Module](http://www.mulesoft.org/documentation/display/current/Batch+Processing).
-			The batch job is divided in Input, Process and On Complete stages.
-			The integration is triggered by poll to Salesforce products. New or modified products are passed to the batch as input.
-			In the batch the material is fetched from SAP by its `ProductCode`. Depending on the result the product is then created or updated in SAP.
-			Finally during the On Complete stage the Anypoint Template will log output statistics data into the console.
+As implemented, this Anypoint Template leverage the [Batch Module](http://www.mulesoft.org/documentation/display/current/Batch+Processing).
+The batch job is divided in Input, Process and On Complete stages.
+The integration is triggered by poll to Salesforce products. New or modified products are passed to the batch as input.
+In the batch the material is fetched from SAP by its `ProductCode`. Depending on the result the product is then created or updated in SAP.
+Finally during the On Complete stage the Anypoint Template will log output statistics data into the console.
 		</section>
 		<section id="running_on_studio">
 		<![CDATA[
