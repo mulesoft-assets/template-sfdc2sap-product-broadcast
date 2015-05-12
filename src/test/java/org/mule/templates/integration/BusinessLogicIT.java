@@ -12,7 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class BusinessLogicIT extends AbstractTemplateTestCase {
 	private static final String POLL_FLOW_NAME = "triggerFlow";
 	private static final String PRODUCT_NAME = "Product Test Name";
 	
-	private static final Logger LOGGER = Logger.getLogger(BusinessLogicIT.class);
+	private static final Logger LOGGER = LogManager.getLogger(BusinessLogicIT.class);
 	
 	private static final int TIMEOUT_SEC = 120;
 
@@ -133,9 +134,9 @@ public class BusinessLogicIT extends AbstractTemplateTestCase {
 	}
 
 	private void waitForPollToRun() {
-		System.out.println("Waiting for poll to run ones...");
+		LOGGER.info("Waiting for poll to run ones...");
 		pollProber.check(new ListenerProbe(pipelineListener));
-		System.out.println("Poll flow done");
+		LOGGER.info("Poll flow done");
 	}
 
 }
