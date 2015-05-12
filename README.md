@@ -32,10 +32,10 @@ Everytime there is a new product or a change in already existing one in Salesfor
 Requirements have been set not only to be used as examples, but also to establish a starting point to adapt your integration to your requirements.
 			
 As implemented, this Anypoint Template leverage the [Batch Module](http://www.mulesoft.org/documentation/display/current/Batch+Processing).
-The batch job is divided in Input, Process and On Complete stages.
+The batch job is divided into *Input*, *Process* and *On Complete* stages.
 The integration is triggered by poll to Salesforce products. New or modified products are passed to the batch as input.
-In the batch the material is fetched from SAP by its `ProductCode`. Depending on the result the product is then created or updated in SAP.
-Finally during the On Complete stage the Anypoint Template will log output statistics data into the console.
+In the batch the material is fetched from SAP by its `ProductCode`. Depending on the result, the product is then created or updated in SAP.
+Finally during the *On Complete* stage the Anypoint Template will log output statistics data into the console.
 
 # Considerations <a name="considerations"/>
 
@@ -61,7 +61,7 @@ There may be a few things that you need to know regarding SAP, in order for this
 
 ### As destination of data
 
-Template uses custom BAPI functions. To create them please use following steps:
+This template uses custom BAPI functions. To create them please use following steps:
 
 1. Create structure `ZMULE_S_MARA` in transaction `SE11` as per its definition in file `structure_ZMULE_S_MARA.abap`
 2. Create table type `ZMULE_TT_MARA` in transaction `SE11` as per its definition in file `table_type_ZMULE_TT_MARA.abap`
@@ -112,6 +112,10 @@ column='486'
 
 
 
+
+
+
+
 # Run it! <a name="runit"/>
 Simple steps to get SFDC2SAP-product-broadcast running.
 
@@ -146,7 +150,7 @@ Once you have imported you Anypoint Template into Anypoint Studio you need to fo
 + Once that is done, right click on you Anypoint Template project folder 
 + Hover you mouse over `"Run as"`
 + Click on  `"Mule Application"`
-In order to make this Anypoint Template run on Mule Studio there are a few extra steps that needs to be made.
+In order to make this Anypoint Template run on Anypoint Studio there are a few extra steps that need to be made.
 Please check this Documentation Page:
 
 + [Enabling Your Studio Project for SAP](http://www.mulesoft.org/documentation/display/current/SAP+Connector#SAPConnector-EnablingYourStudioProjectforSAP)
@@ -178,7 +182,7 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + sfdc.username `bob.dylan@sfdc`
 + sfdc.password `DylanPassword123`
 + sfdc.securityToken `avsfwCUl7apQs56Xq2AKi3X`
-+ sfdc.url `https://test.salesforce.com/services/Soap/u/28.0`
++ sfdc.url `https://test.salesforce.com/services/Soap/u/32.0`
 
 **SAP Connector configuration**
 
