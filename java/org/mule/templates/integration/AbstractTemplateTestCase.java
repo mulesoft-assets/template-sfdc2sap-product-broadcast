@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
 import org.junit.Rule;
 import org.mule.MessageExchangePattern;
 import org.mule.api.MuleEvent;
@@ -37,6 +38,7 @@ import org.mule.transport.NullPayload;
  * @author damiansima
  */
 public abstract class AbstractTemplateTestCase extends FunctionalTestCase {
+	private static final Logger log = LogManager.getLogger(AbstractTemplateTestCase.class);
 	private static final String MAPPINGS_FOLDER_PATH = "./mappings";
 	private static final String TEST_FLOWS_FOLDER_PATH = "./src/test/resources/flows/";
 	private static final String MULE_DEPLOY_PROPERTIES_PATH = "./src/main/app/mule-deploy.properties";
@@ -106,9 +108,9 @@ public abstract class AbstractTemplateTestCase extends FunctionalTestCase {
 	}
 
 	protected void waitForPollToRun() {
-		System.out.println("Waiting for poll to run ones...");
+		log.info("Waiting for poll to run ones...");
 		pollProber.check(new ListenerProbe(pipelineListener));
-		System.out.println("Poll flow done");
+		log.info("Poll flow done");
 	}
 
 	@SuppressWarnings("unchecked")
