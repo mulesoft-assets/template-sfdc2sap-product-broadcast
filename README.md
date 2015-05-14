@@ -192,12 +192,15 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + sap.jco.sysnr `14`
 + sap.jco.client `800`
 + sap.jco.lang `EN`
+
+**SAP Material properties configuration**
+
 + sap.material.type `ZHTI`
 + sap.material.industrySector `T`
 + sap.material.baseUnitOfMeasurement `KGS`
 
 # API Calls <a name="apicalls"/>
-There are no particular considerations for this Anypoint Template regarding API calls.
+Salesforce imposes limits on the number of API Calls that can be made. However, in this template, only one call per poll cycle is done to retrieve all the information required.
 
 
 # Customize It!<a name="customizeit"/>
