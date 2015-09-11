@@ -33,7 +33,7 @@ Requirements have been set not only to be used as examples, but also to establis
 			
 As implemented, this Anypoint Template leverage the [Batch Module](http://www.mulesoft.org/documentation/display/current/Batch+Processing).
 The batch job is divided into *Input*, *Process* and *On Complete* stages.
-The integration is triggered by poll to Salesforce products. New or modified products are passed to the batch as input.
+The integration is triggered by poll to Salesforce products. New or modified products with non-empty product code are passed to the batch as input.
 In the batch the material is fetched from SAP by its `ProductCode`. Depending on the result, the product is then created or updated in SAP.
 Finally during the *On Complete* stage the Anypoint Template will log output statistics data into the console.
 
@@ -175,7 +175,7 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + poll.frequencyMillis `10000`
 + poll.startDelayMillis `5000`
 + page.size `100`
-+ watermark.default.expression `2014-06-26T12:30:00.000Z`
++ watermark.default.expression `2015-09-11T12:30:00.000Z`
 		
 **SalesForce Connector configuration**
 
