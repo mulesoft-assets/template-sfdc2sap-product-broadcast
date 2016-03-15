@@ -63,10 +63,10 @@ There may be a few things that you need to know regarding SAP, in order for this
 
 This template uses custom BAPI functions. To create them please use following steps:
 
-1. Create structure `ZMULE_S_MARA` in transaction `SE11` as per its definition in file `structure_ZMULE_S_MARA.abap`
-2. Create table type `ZMULE_TT_MARA` in transaction `SE11` as per its definition in file `table_type_ZMULE_TT_MARA.abap`
+1. Create structure `ZMMST_ENH_MARA` in transaction `SE11` as per its definition in file `structure_ZMMST_ENH_MARA.abap`
+2. Create table type `ZMMTTY_ENH_MARA` in transaction `SE11` as per its definition in file `table_type_ZMMTTY_ENH_MARA.abap`
 3. Create message class called `ZMULESOFTINTEGRATION` in transaction `SE91` as per definition in file `msg_class_ZMULESOFTINTEGRATION.abap`
-4. Create function module `ZMULE_MATERIAL_GETLIST` in transaction `SE37` as per source file `ZMULE_MATERIAL_GETLIST.abap`
+4. Create function module `ZMMFM_MATERIAL_GETLIST` in transaction `SE37` as per source file `ZMMFM_MATERIAL_GETLIST.abap`
 
 Referenced files are in [src/main/resources] directory.
 ## Salesforce Considerations <a name="salesforceconsiderations"/>
