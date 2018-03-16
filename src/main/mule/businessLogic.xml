@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sap="http://www.mulesoft.org/schema/mule/sap" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/sap http://www.mulesoft.org/schema/mule/sap/current/mule-sap.xsd">
+
+	<flow name="businessLogicFlow" doc:id="8759532e-79b7-4789-990c-dc8e162bfd67">
+		<batch:job jobName="migrateProductsBatch" doc:id="204892ae-0d97-4326-beae-310c8d52b7a6">
+			<batch:process-records>
+				<batch:step name="foreachProductInSalesforceGetMaterialInSAPStep" doc:id="89713774-362a-4e92-9bdc-41e31802bf38">
+					<ee:transform doc:name="Set XML Input" doc:id="a1f34a8d-3030-4600-ae80-02bf579f7696">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+---
+{
+  "ZMMFM_MATERIAL_GETLIST": {
+    "import": {
+      "IV_MAT_ID": payload.ProductCode
+    }
+  }
+}]]></ee:set-payload>
+						</ee:message>
+						<ee:variables>
+							<ee:set-variable variableName="product"><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<sap:execute-synchronous-remote-function-call
+						doc:name="Query Material from SAP" doc:id="7b7c060f-d143-4d37-aeff-1e8fb91e4f1d" config-ref="SAP_Outbound"
+						key="ZMMFM_MATERIAL_GETLIST" />
+					<choice doc:name="Is material not null" doc:id="0863fa7c-2dc7-43fd-afa6-ebafec0c9f43">
+						<when expression="payload.ZMMFM_MATERIAL_GETLIST.tables.T_MARA != null">
+							<ee:transform doc:name="ZMMFM_MATERIAL_GETLIST to Material" doc:id="dc35be3c-8dce-413a-a317-5bd8244b131a">
+								<ee:message>
+									<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload.ZMMFM_MATERIAL_GETLIST.tables.T_MARA.*row map {
+	Name               : $.MAKTX,
+	LastModifiedDate   : $.LAST_MODIF_DATE,
+	CreatedById        : $.ERNAM,
+	LastModifiedById   : $.AENAM,
+	ProductCode        : $.MATNR,
+	BaseUnitOfMeasureX : ""
+} ]]></ee:set-payload>
+								</ee:message>
+								<ee:variables>
+									<ee:set-variable variableName="sapMaterials"><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-variable>
+								</ee:variables>
+							</ee:transform>
+						</when>
+						<otherwise>
+							<ee:transform doc:name="Empty list" doc:id="a041ed1d-53fb-42fa-95d3-bf0caad61b35">
+								<ee:message>
+									<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+vars.product ++ {BaseUnitOfMeasureX : 'X'}]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+						</otherwise>
+					</choice>
+				</batch:step>
+				<batch:step name="foreachProductInSalesforceUpsertMaterialInSAPStep" doc:id="78a74ab4-9b91-416d-985a-acda2ac377eb">
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="1ad86a98-643e-494a-a90a-32daab0b03cc"
+						size="${page.size}">
+						<foreach doc:name="For Each Material" doc:id="fb235f4f-66cd-486a-90ad-b044c030b025" collection="payload">
+							<ee:transform doc:name="Set XML Input" doc:id="6501521a-1ad7-447a-813b-7c446937be4b">
+								<ee:message>
+									<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+---
+{
+  "BAPI_MATERIAL_SAVEDATA": {
+    "import": {
+      "HEADDATA": {
+        "MATERIAL": payload.ProductCode,
+        "MATL_TYPE": "${sap.material.type}",
+        "IND_SECTOR": "${sap.material.industrySector}",
+        "BASIC_VIEW": "X"
+      },
+      "CLIENTDATA": {
+        "BASE_UOM": "${sap.material.baseUnitOfMeasurement}"
+      },
+      "CLIENTDATAX": {
+        "BASE_UOM": payload.BaseUnitOfMeasureX
+      }
+    },
+    "tables": {
+      "MATERIALDESCRIPTION": {
+          "row": {
+            "LANGU": "EN",
+            "LANGU_ISO": "EN",
+            "MATL_DESC": payload.Name
+          }
+      }
+    }
+  }
+}]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+							<logger level="INFO" doc:name="Log Products to upsert" doc:id="1dadfde6-973b-4d0c-a157-cf0fb17f139a" message="Products to upsert: #[output application/json --- payload]" />
+							<sap:execute-synchronous-remote-function-call doc:name="Upsert Material" doc:id="55699ab8-18e4-4909-ba36-908d2a4c55ad" config-ref="SAP_Outbound" key="BAPI_MATERIAL_SAVEDATA"/>
+							<logger level="INFO" doc:name="Log Result" doc:id="7236a9f6-7aaf-4f40-94e3-e477a132e88d" message="Upsert result: #[output application/json --- payload]" />
+						</foreach>
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete>
+				<ee:transform doc:name="Prepare migration result" doc:id="c84b4bc4-5a65-41c1-9d0c-f1ebd3d8db7a">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output text/plain
+---
+"Migration Report: \n"
+
+++ "\n Time [milliseconds]: " 		++ payload.elapsedTimeInMillis
+++ "\n Total Records: "				++ payload.totalRecords
+++ "\n Successful Records: "		++ payload.successfulRecords
+++ "\n Failed Records: "			++ payload.failedRecords
+++ "\n Loaded Records: "			++ payload.loadedRecords
+++ "\n Processed Records: " 		++ payload.processedRecords]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Migration process has finished!" doc:id="b7575d38-7dbd-4602-9186-1bbb25234896"
+					message="Migration process has finished: #[payload]" />
+
+			</batch:on-complete>
+
+		</batch:job>
+	</flow>
+
+</mule>
+
+
+        
