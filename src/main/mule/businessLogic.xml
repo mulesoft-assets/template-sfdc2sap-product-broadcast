@@ -42,14 +42,7 @@ payload]]></ee:set-variable>
 									<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 ---
-payload.ZMMFM_MATERIAL_GETLIST.tables.T_MARA.*row map {
-	Name               : $.MAKTX,
-	LastModifiedDate   : $.LAST_MODIF_DATE,
-	CreatedById        : $.ERNAM,
-	LastModifiedById   : $.AENAM,
-	ProductCode        : $.MATNR,
-	BaseUnitOfMeasureX : ""
-} ]]></ee:set-payload>
+vars.product ++ {BaseUnitOfMeasureX : ''}]]></ee:set-payload>
 								</ee:message>
 							</ee:transform>
 						</when>
