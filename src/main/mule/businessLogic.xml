@@ -37,7 +37,7 @@ payload]]></ee:set-variable>
 						key="ZMMFM_MATERIAL_GETLIST" />
 					<choice doc:name="Is material not null" doc:id="0863fa7c-2dc7-43fd-afa6-ebafec0c9f43">
 						<when expression="payload.ZMMFM_MATERIAL_GETLIST.tables.T_MARA != null">
-							<ee:transform doc:name="ZMMFM_MATERIAL_GETLIST to Material" doc:id="dc35be3c-8dce-413a-a317-5bd8244b131a">
+							<ee:transform doc:name="Set Material data for upsert" doc:id="dc35be3c-8dce-413a-a317-5bd8244b131a">
 								<ee:message>
 									<ee:set-payload><![CDATA[%dw 2.0
 output application/java
@@ -47,7 +47,7 @@ vars.product ++ {BaseUnitOfMeasureX : ''}]]></ee:set-payload>
 							</ee:transform>
 						</when>
 						<otherwise>
-							<ee:transform doc:name="Empty list" doc:id="a041ed1d-53fb-42fa-95d3-bf0caad61b35">
+							<ee:transform doc:name="Set Material data for insert" doc:id="a041ed1d-53fb-42fa-95d3-bf0caad61b35">
 								<ee:message>
 									<ee:set-payload><![CDATA[%dw 2.0
 output application/java
