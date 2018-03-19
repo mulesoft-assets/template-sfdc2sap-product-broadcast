@@ -51,13 +51,6 @@ payload.ZMMFM_MATERIAL_GETLIST.tables.T_MARA.*row map {
 	BaseUnitOfMeasureX : ""
 } ]]></ee:set-payload>
 								</ee:message>
-								<ee:variables>
-									<ee:set-variable variableName="sapMaterials"><![CDATA[%dw 2.0
-output application/java
----
-{
-}]]></ee:set-variable>
-								</ee:variables>
 							</ee:transform>
 						</when>
 						<otherwise>

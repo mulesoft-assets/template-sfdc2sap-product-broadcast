@@ -33,7 +33,7 @@ Requirements have been set not only to be used as examples, but also to establis
 			
 As implemented, this Anypoint Template leverage the [Batch Module](http://www.mulesoft.org/documentation/display/current/Batch+Processing).
 The batch job is divided into *Process* and *On Complete* stages.
-The integration is triggered by poll to Salesforce products. New or modified products with non-empty product code are passed to the batch as input.
+The integration is triggered by scheduler to Salesforce products. New or modified products with non-empty product code are passed to the batch as input.
 In the batch the material is fetched from SAP by its `ProductCode`. Depending on the result, the product is then created or updated in SAP.
 Finally during the *On Complete* stage the Anypoint Template will log output statistics data into the console.
 
@@ -222,7 +222,7 @@ In the visual editor they can be found on the *Global Element* tab.
 
 ## businessLogic.xml<a name="businesslogicxml"/>
 Functional aspect of the Anypoint Template is implemented on this XML, directed by a batch job that will be responsible for creations/updates. The several message processors constitute four high level actions that fully implement the logic of this Anypoint Template:
-1. The integration is triggered by poll to Salesforce Products. New or modified products are passed to the batch as input.
+1. The integration is triggered by scheduler to Salesforce Products. New or modified products are passed to the batch as input.
 2. In the batch the material is fetched from SAP by its `ProductCode`. Depending on the result, the product is then created or updated in SAP.
 3. Finally during the *On Complete* stage the Anypoint Template will log output statistics data into the console.
 
