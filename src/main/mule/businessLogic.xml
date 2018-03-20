@@ -35,7 +35,7 @@ payload]]></ee:set-variable>
 					<sap:execute-synchronous-remote-function-call
 						doc:name="Query Material from SAP" doc:id="7b7c060f-d143-4d37-aeff-1e8fb91e4f1d" config-ref="SAP_Outbound"
 						key="ZMMFM_MATERIAL_GETLIST" />
-					<choice doc:name="Is material not null" doc:id="0863fa7c-2dc7-43fd-afa6-ebafec0c9f43">
+					<choice doc:name="Does Material exist" doc:id="0863fa7c-2dc7-43fd-afa6-ebafec0c9f43">
 						<when expression="payload.ZMMFM_MATERIAL_GETLIST.tables.T_MARA != null">
 							<ee:transform doc:name="Set Material data for upsert" doc:id="dc35be3c-8dce-413a-a317-5bd8244b131a">
 								<ee:message>
@@ -59,10 +59,7 @@ vars.product ++ {BaseUnitOfMeasureX : 'X'}]]></ee:set-payload>
 					</choice>
 				</batch:step>
 				<batch:step name="foreachProductInSalesforceUpsertMaterialInSAPStep" doc:id="78a74ab4-9b91-416d-985a-acda2ac377eb">
-					<batch:aggregator doc:name="Batch Aggregator" doc:id="1ad86a98-643e-494a-a90a-32daab0b03cc"
-						size="${page.size}">
-						<foreach doc:name="For Each Material" doc:id="fb235f4f-66cd-486a-90ad-b044c030b025" collection="payload">
-							<ee:transform doc:name="Set XML Input" doc:id="6501521a-1ad7-447a-813b-7c446937be4b">
+					<ee:transform doc:name="Set XML Input" doc:id="6501521a-1ad7-447a-813b-7c446937be4b">
 								<ee:message>
 									<ee:set-payload><![CDATA[%dw 2.0
 output application/xml
@@ -96,11 +93,9 @@ output application/xml
 }]]></ee:set-payload>
 								</ee:message>
 							</ee:transform>
-							<logger level="INFO" doc:name="Log Products to upsert" doc:id="1dadfde6-973b-4d0c-a157-cf0fb17f139a" message="Products to upsert: #[output application/json --- payload]" />
-							<sap:execute-synchronous-remote-function-call doc:name="Upsert Material" doc:id="55699ab8-18e4-4909-ba36-908d2a4c55ad" config-ref="SAP_Outbound" key="BAPI_MATERIAL_SAVEDATA"/>
-							<logger level="INFO" doc:name="Log Result" doc:id="7236a9f6-7aaf-4f40-94e3-e477a132e88d" message="Upsert result: #[output application/json --- payload]" />
-						</foreach>
-					</batch:aggregator>
+					<logger level="INFO" doc:name="Log Products to upsert" doc:id="1dadfde6-973b-4d0c-a157-cf0fb17f139a" message="Products to upsert: #[output application/json --- payload]" />
+					<sap:execute-synchronous-remote-function-call doc:name="Upsert Material" doc:id="55699ab8-18e4-4909-ba36-908d2a4c55ad" config-ref="SAP_Outbound" key="BAPI_MATERIAL_SAVEDATA" />
+					<logger level="INFO" doc:name="Log Result" doc:id="7236a9f6-7aaf-4f40-94e3-e477a132e88d" message="Upsert result: #[output application/json --- payload]" />
 				</batch:step>
 			</batch:process-records>
 			<batch:on-complete>

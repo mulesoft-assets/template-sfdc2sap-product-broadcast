@@ -51,9 +51,6 @@ Referenced files are in [src/main/resources] directory.
 		</section>
 		<section id="application_configuration">
 		<![CDATA[
-**Batch Aggregator configuration**
-+ page.size `100`
-
 + scheduler.frequency `10000`
 + scheduler.start.delay `5000`
 
