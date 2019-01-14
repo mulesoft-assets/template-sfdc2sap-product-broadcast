@@ -95,7 +95,6 @@ output application/xml
 							</ee:transform>
 					<logger level="INFO" doc:name="Log Products to upsert" doc:id="1dadfde6-973b-4d0c-a157-cf0fb17f139a" message="Products to upsert: #[output application/json --- payload]" />
 					<sap:execute-synchronous-remote-function-call doc:name="Upsert Material" doc:id="55699ab8-18e4-4909-ba36-908d2a4c55ad" config-ref="SAP_Outbound" key="BAPI_MATERIAL_SAVEDATA" />
-					<logger level="INFO" doc:name="Log Result" doc:id="7236a9f6-7aaf-4f40-94e3-e477a132e88d" message="Upsert result: #[output application/json --- payload]" />
 				</batch:step>
 			</batch:process-records>
 			<batch:on-complete>
