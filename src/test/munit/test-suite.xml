@@ -51,7 +51,7 @@ var queryData= vars.products map($.Name)
 payload filter ($.Name == queryData[0] or $.Name == queryData[1])]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-			<munit-tools:assert-that doc:name="Assert that record is not migrated" doc:id="6102db21-def5-4084-977b-dc774890b6b0" expression="#[sizeOf(payload filter ($.Name == vars.products[1].Name))]" is="#[MunitTools::equalTo(0)]"/>
+			<munit-tools:assert-that doc:name="Assert that record is not migrated" doc:id="6102db21-def5-4084-977b-dc774890b6b0" expression="#[sizeOf(payload filter ($.Name == vars.products[1].Name))]" is="#[MunitTools::equalTo(0)]" message="Assert that record is not migrated has failed"/>
 			<flow-ref doc:name="businessLogicFlow" doc:id="64550340-2cb1-4923-b44d-9083447734a9" name="businessLogicFlow"/>
 			<scripting:execute doc:name="Sleep for 30s until the processing is completed" doc:id="dded2a9d-0d6f-44c7-ae61-f517380f3f94" engine="groovy">
 				<scripting:code>sleep(30000)</scripting:code>
@@ -102,7 +102,7 @@ payload.ZMMFM_MATERIAL_GETLIST.tables.T_MARA.*row map
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-		<munit-tools:assert-that doc:name="Assert that we found Product" doc:id="46ffb4a0-7137-47d7-8c2d-b753b9a3fcd3" is="#[MunitTools::equalTo(vars.products[0].Name)]" expression="#[payload[0].Name]" />
+		<munit-tools:assert-that doc:name="Assert that we found Product" doc:id="46ffb4a0-7137-47d7-8c2d-b753b9a3fcd3" is="#[MunitTools::equalTo(vars.products[0].Name)]" expression="#[payload[0].Name]" message="Assert that we found Product has failed"/>
 	</flow>
 
 </mule>
