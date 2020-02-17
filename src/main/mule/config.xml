@@ -11,7 +11,7 @@
 		<salesforce:basic-connection password="${sfdc.password}" securityToken="${sfdc.securityToken}" username="${sfdc.username}" />
 	</salesforce:sfdc-config>
 
-	<sap:outbound-config name="SAP_Outbound" doc:id="189c3c5c-3a22-4771-91ee-d2351bf0f190" doc:name="SAP Outbound">
+	<sap:sap-config name="SAP_Config" doc:id="189c3c5c-3a22-4771-91ee-d2351bf0f190" doc:name="SAP Config">
 		<sap:simple-connection-provider-connection applicationServerHost="${sap.jco.ashost}" client="${sap.jco.client}" language="${sap.jco.lang}" password="${sap.jco.passwd}" systemNumber="${sap.jco.sysnr}" username="${sap.jco.user}" />
-	</sap:outbound-config>
+	</sap:sap-config>
 </mule>
