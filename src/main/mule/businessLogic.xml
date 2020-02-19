@@ -77,7 +77,7 @@ output application/xml
         "BASE_UOM": "${sap.material.baseUnitOfMeasurement}"
       },
       "CLIENTDATAX": {
-        "BASE_UOM": "x"
+        "BASE_UOM": "X"
       }
     },
     "tables": {
