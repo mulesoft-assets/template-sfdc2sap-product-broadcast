@@ -87,7 +87,7 @@ output application/xml
 }]]></ee:set-payload>
 						</ee:message>
 					</ee:transform>
-		<sap:execute-synchronous-remote-function-call
+		<sap:sync-rfc
 						doc:name="Query Material from SAP" doc:id="249f5b82-75ac-4959-902b-dedbdd5aea3f" config-ref="SAP_Outbound"
 						key="ZMMFM_MATERIAL_GETLIST" />
 		<ee:transform doc:name="Transform result from SAP" doc:id="8c7b9c72-19e1-43c7-bdb4-b25405f2b3c1">
@@ -96,7 +96,7 @@ output application/xml
 output application/java
 ---
 payload.ZMMFM_MATERIAL_GETLIST.tables.T_MARA.*row map
-{	
+{
 	Name: $.MAKTX,
 	ProductCode: $.MATNR
 }]]></ee:set-payload>
