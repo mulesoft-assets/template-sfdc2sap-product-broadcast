@@ -77,7 +77,7 @@ output application/xml
         "BASE_UOM": "${sap.material.baseUnitOfMeasurement}"
       },
       "CLIENTDATAX": {
-        "BASE_UOM": payload.BaseUnitOfMeasureX
+        "BASE_UOM": "x"
       }
     },
     "tables": {
@@ -94,7 +94,7 @@ output application/xml
 								</ee:message>
 							</ee:transform>
 					<logger level="INFO" doc:name="Log Products to upsert" doc:id="1dadfde6-973b-4d0c-a157-cf0fb17f139a" message="Products to upsert: #[output application/json --- payload]" />
-					<sap:sync-rfc doc:name="Upsert Material" doc:id="55699ab8-18e4-4909-ba36-908d2a4c55ad" config-ref="SAP_Config" key="BAPI_MATERIAL_SAVEDATA" />
+					<sap:sync-rfc doc:name="Upsert Material" doc:id="593af6b1-fe33-454e-9caa-53dcede76124" config-ref="SAP_Config" key="BAPI_MATERIAL_SAVEDATA" />
 				</batch:step>
 			</batch:process-records>
 			<batch:on-complete>
