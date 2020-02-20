@@ -42,7 +42,7 @@ payload]]></ee:set-variable>
 									<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 ---
-vars.product ++ {BaseUnitOfMeasureX : ''}]]></ee:set-payload>
+vars.product ++ {BaseUnitOfMeasureX : ""}]]></ee:set-payload>
 								</ee:message>
 							</ee:transform>
 						</when>
@@ -77,7 +77,7 @@ output application/xml
         "BASE_UOM": "${sap.material.baseUnitOfMeasurement}"
       },
       "CLIENTDATAX": {
-        "BASE_UOM": "X"
+        "BASE_UOM": payload.BaseUnitOfMeasureX
       }
     },
     "tables": {
