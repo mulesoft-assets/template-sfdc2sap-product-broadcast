@@ -94,7 +94,41 @@ output application/xml
 								</ee:message>
 							</ee:transform>
 					<logger level="INFO" doc:name="Log Products to upsert" doc:id="1dadfde6-973b-4d0c-a157-cf0fb17f139a" message="Products to upsert: #[output application/json --- payload]" />
-					<sap:sync-rfc doc:name="Upsert Material" doc:id="593af6b1-fe33-454e-9caa-53dcede76124" config-ref="SAP_Config" key="BAPI_MATERIAL_SAVEDATA" />
+					<ee:transform doc:name="test transform" doc:id="e9d49d3b-d96e-4866-a3b3-619b1e974b97" >
+                        <ee:message >
+                            <ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+{
+  "BAPI_MATERIAL_SAVEDATA": {
+    "import": {
+      "HEADDATA": {
+        "MATERIAL": "S2S_PBS-II1XT7WR22",
+        "MATL_TYPE": "ZHTI",
+        "IND_SECTOR": "T",
+        "BASIC_VIEW": "X"
+      },
+      "CLIENTDATA": {
+        "BASE_UOM": "KGS"
+      },
+      "CLIENTDATAX": {
+        "BASE_UOM": ""
+      }
+    },
+    "tables": {
+      "MATERIALDESCRIPTION": {
+        "row": {
+          "LANGU": "EN",
+          "LANGU_ISO": "EN",
+          "MATL_DESC": "TestMaterial13234"
+        }
+      }
+    }
+  }
+}]]></ee:set-payload>
+                        </ee:message>
+                    </ee:transform>
+                    <sap:sync-rfc doc:name="Upsert Material" doc:id="593af6b1-fe33-454e-9caa-53dcede76124" config-ref="SAP_Config" key="BAPI_MATERIAL_SAVEDATA" />
 				</batch:step>
 			</batch:process-records>
 			<batch:on-complete>
